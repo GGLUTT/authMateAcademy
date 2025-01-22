@@ -8,7 +8,7 @@ import { errorMiddleWare } from './midlewares/errorMidleWares.js';
 
 const app = express();
 
-const port = process.env.PORT || 3005;
+const port = process.env.port || 3005;
 
 app.use(cors({
     origin: process.env.CLIENT_HOST,
