@@ -11,15 +11,14 @@ import { jwtService } from "../services/jwt.service.js";
         return res.status(400).send({ message: 'Email and password are required' });
     }
 
-    try {
+
         const activationdToken = uuidv4()
 
         const newUser = await User.create({ email, password });
         await emailService.sendActivationEmail(email,activationdToken)
         res.status(201).send(newUser);
-    } catch (err) {
-        res.status(500).send({ message: 'Server error', error: err.message });
-    }
+  
+        // res.status(500).send({ message: 'Server error', error: err.message });
 
 
 };

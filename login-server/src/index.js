@@ -3,6 +3,7 @@ import express from 'express';
 import { authRouter } from './routes/auth.route.js';
 import cors from 'cors'
 import { userRouter } from './routes/user.route.js';
+import { errorMiddleWare } from './midlewares/errorMidleWares.js';
 
 
 const app = express();
@@ -22,6 +23,8 @@ app.use('/users', userRouter);
 app.get('/' , (req, res) => {
     res.send('Hello')
 })
+
+app.use(errorMiddleWare)
 
 app.listen(port ,() => {
     console.log(`Server started on adress http://localhost:${port}`);
