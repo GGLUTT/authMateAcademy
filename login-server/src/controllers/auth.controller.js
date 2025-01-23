@@ -1,22 +1,51 @@
  
  import { User } from "../models/user.js"
-import { emailService } from "../services/email.service.js";
-import {v4 as uuidv4} from 'uuid'
+
 import { userService } from "../services/user.service.js";
 import { jwtService } from "../services/jwt.service.js";
+import { ApiError } from "../exeption/api.error.js";
+
+
+function validateEmail(value) {
+  if (!value) {
+    return 'Email is required';
+  }
+
+  const emailPattern = /^[\w.+-]+@([\w-]+\.){1,3}[\w-]{2,}$/;
+
+  if (!emailPattern.test(value)) {
+    return 'Email is not valid';
+  }
+}
+
+function validatePassword(value) {
+  if (!value) {
+    return 'Password is required';
+  }
+    
+  if (value.length < 6) {
+    return 'At least 6 characters';
+  }
+};
+
  const registration = async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).send({ message: 'Email and password are required' });
-    }
+     const errors  = {
+      email: validateEmail(email),
+      password: validatePassword(password)
+     }
+
+     if(errors.email || errors.password){
+        throw ApiError.badRequest('Bad request' , errors)
+     }
+
+     await userService.register(email, password)
 
 
-        const activationdToken = uuidv4()
-
-        const newUser = await User.create({ email, password });
-        await emailService.sendActivationEmail(email,activationdToken)
-        res.status(201).send(newUser);
+        res.status(201).send({
+            message:'OK'
+        });
   
         // res.status(500).send({ message: 'Server error', error: err.message });
 
